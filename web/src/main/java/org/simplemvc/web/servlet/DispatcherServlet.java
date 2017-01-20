@@ -2,8 +2,6 @@ package org.simplemvc.web.servlet;
 
 import com.alibaba.fastjson.JSON;
 import org.simplemvc.util.ClassUtils;
-import org.simplemvc.util.ConfigUtils;
-import org.simplemvc.util.StringUtils;
 import org.simplemvc.web.bind.annotation.Controller;
 import org.simplemvc.web.bind.annotation.RequestMapping;
 import org.slf4j.Logger;
