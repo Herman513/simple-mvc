@@ -1,12 +1,11 @@
 package org.simplemvc.test.controller;
 
-import org.simplemvc.util.ClassUtils;
 import org.simplemvc.web.bind.annotation.Controller;
+import org.simplemvc.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,20 +13,21 @@ import java.util.Map;
  * Usage：
  */
 @Controller
+@RequestMapping("/index")
 public class IndexController {
+    @RequestMapping("/index")
     public Object index(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         result.put("status", 200);
-        List<String> s = ClassUtils.getClassNames();
-        List<Class> testAnno = ClassUtils.getClassByAnnoation(Controller.class);
         result.put("message", "index method is invorked!");
         return result;
     }
 
+    @RequestMapping("/welcome")
     public Object welcome(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         result.put("status", 200);
-        result.put("message", "Welcome to jw's world!");
+        result.put("message", "Welcome to simple-mvc !");
         return result;
     }
 }

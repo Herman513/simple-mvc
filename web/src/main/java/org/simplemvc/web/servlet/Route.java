@@ -11,6 +11,12 @@ public class Route {
     private Method action;//路由所在方法
     private Object controller;//路由所在控制器
 
+    public Route(String path, Method action, Object controller) {
+        this.path = path;
+        this.action = action;
+        this.controller = controller;
+    }
+
     public String getPath() {
         return path;
     }

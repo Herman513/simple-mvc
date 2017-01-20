@@ -4,7 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,11 +22,21 @@ public class ClassUtils {
     private static List<Class> classObj=new ArrayList<>();
     static {
         String packageScan=ConfigUtils.getProperty("package.scan");
-        String rootPath=ClassUtils.class.getResource("/").getPath();
-        if(packageScan!=null) {
-            List<File> files = FileUtils.findFiles(packageScan.replace('.',File.separatorChar),".class");
-            files.forEach(file ->classNames.add(file.getAbsolutePath().replace(rootPath,"").replace(".class","").replace(File.separatorChar,'.')));
+        String rootPath;
+        try {
+            rootPath = URLDecoder.decode(ClassUtils.class.getResource("/").getFile(),"UTF-8");
+            if(packageScan!=null) {
+                List<File> files = FileUtils.findFiles(packageScan.replace('.',File.separatorChar),".class");
+                for (File file : files) {
+                    classNames.add(file.toURI().getPath()
+                            .replace(rootPath,"")
+                            .replace(".class","").replace('/','.'));
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            logger.error("failed in find .class files ");
         }
+
         Class clazz;
        for(String className:classNames) {
            try {
@@ -49,5 +62,20 @@ public class ClassUtils {
             }
             return false;
         }).collect(Collectors.toList());
+    }
+    
+    public static List<Method> getMethodsByAnnoation(Class clazz,Class annotation){
+        Method[] methods=clazz.getDeclaredMethods();
+        List<Method> result=new ArrayList<>();
+        for (Method method : methods) {
+            Annotation[] annos = method.getAnnotations();
+            for (Annotation anno : annos) {
+                if(anno.annotationType()==annotation) {
+                    result.add(method);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
