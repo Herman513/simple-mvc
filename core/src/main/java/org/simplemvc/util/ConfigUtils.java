@@ -14,7 +14,7 @@ public class ConfigUtils {
     private static Properties config = new Properties();
 
     static {//run those code when load this class, make sure those code just run once
-        List<File> files = FileUtils.findFiles(".properties");//只处理properties类型的配置文件
+        List<File> files = FileUtils.findClassPathFiles(".properties");//只处理properties类型的配置文件
         Properties prop;
         for (File file : files) {
             prop = new Properties();

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class FileUtils {
     //获取classpath下所有的以fileExtension结尾的文件
-    public static List<File> findFiles(final String fileExtension) {
+    public static List<File> findClassPathFiles(final String fileExtension) {
         List<File> files = new LinkedList<>();
         try {
             URL url = FileUtils.class.getResource("/");//获取包的根路径
@@ -35,5 +35,35 @@ public class FileUtils {
             e.printStackTrace();
         }
         return files;
+    }
+    public static List<File> findFiles(final String path, final String fileExtension){//获取path下所有的fileExtension文件
+        List<File> files=new LinkedList<>();
+        List<File> result=new LinkedList<>();
+        try {
+            URL url = FileUtils.class.getResource("/");//获取包的根路径
+            if (url == null)
+                return result;
+            String protocol = url.getProtocol();
+            if ("file".equals(protocol)) {
+                String filePath = URLDecoder.decode(url.getFile(), "UTF-8")+path;
+                File dir = new File(filePath);
+                if (!dir.exists() || !dir.isDirectory())
+                    return result;
+                File[] childFiles ;
+                files.add(dir);
+                while (files.size() > 0) {//做成队列处理
+                    childFiles= files.remove(0).listFiles(file ->file.isDirectory()|| file.getName().endsWith(fileExtension));
+                    for (int i = 0; i < childFiles.length; i++) {
+                        if(childFiles[i].isDirectory())
+                            files.add(childFiles[i]);
+                        else
+                            result.add(childFiles[i]);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
