@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -54,27 +53,15 @@ public class ClassUtils {
     }
 
     public static List<Class> getClassByAnnoation(Class annotation){
-        return classObj.stream().filter(clazz->{
-            Annotation[] annos = clazz.getDeclaredAnnotations();
-            for (Annotation anno : annos) {
-                if(anno.annotationType()==annotation)
-                    return true;
-            }
-            return false;
-        }).collect(Collectors.toList());
+        return classObj.stream().filter(clazz->clazz.isAnnotationPresent(annotation)).collect(Collectors.toList());
     }
     
     public static List<Method> getMethodsByAnnoation(Class clazz,Class annotation){
         Method[] methods=clazz.getDeclaredMethods();
         List<Method> result=new ArrayList<>();
         for (Method method : methods) {
-            Annotation[] annos = method.getAnnotations();
-            for (Annotation anno : annos) {
-                if(anno.annotationType()==annotation) {
-                    result.add(method);
-                    break;
-                }
-            }
+            if(method.isAnnotationPresent(annotation))
+                result.add(method);
         }
         return result;
     }
